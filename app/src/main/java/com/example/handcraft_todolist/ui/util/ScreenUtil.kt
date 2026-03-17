@@ -19,7 +19,7 @@ private fun screenWidthDp() = LocalConfiguration.current.screenWidthDp
 @Composable
 private fun density() = LocalDensity.current.density
 
-private const val DesignWidth = 1080f
+private const val DesignWidth = 375f
 
 @Composable
 private fun ratioPx() = screenWidthPx() / DesignWidth
