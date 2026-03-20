@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -86,6 +87,7 @@ fun TodoListScreen() {
         ) {
             DateRow()
             CategoryRow()
+            TaskList()
         }
     }
 }
@@ -284,5 +286,164 @@ fun CategoryItem(
            fontWeight = if(isSelected) FontWeight.SemiBold else FontWeight.Normal,
            color = if(isSelected) Color.White else Color(0xFF5F33E1)
        )
+    }
+}
+
+data class Task(
+    val title: String,
+    val category: String,
+    val status: String,
+    val date: String,
+    val icon: Int
+)
+
+val tasks = listOf(
+    Task(
+        "市场调研",
+        "社交App设计",
+        "已完成",
+        "10:00 AM",
+        R.mipmap.briefcase
+    ),
+    Task(
+        "竞争力分析",
+        "社交App设计",
+        "进行中",
+        "12:00 PM",
+        R.mipmap.briefcase
+    ),
+    Task(
+        "创建低保真度线框",
+        "手搓UI重新设计挑战",
+        "待办",
+        "07:00 PM",
+        R.mipmap.user
+    ),
+    Task(
+        "如何设计出美观的界面",
+        "关于设计",
+        "待办",
+        "09:00 PM",
+        R.mipmap.book
+    )
+)
+
+@Composable
+fun TaskList() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 22.px())
+            .padding(top = 28.px()),
+        verticalArrangement = Arrangement.spacedBy(16.px())
+    ) {
+        tasks.fastForEach { task ->
+            TaskItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(15.px()))
+                    .background(Color.White)
+                    .padding(16.px()),
+                task = task
+            )
+        }
+    }
+}
+
+@Composable
+fun TaskItem(
+    modifier: Modifier = Modifier,
+    task: Task
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.px())
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = task.category,
+                fontSize = 11.textPx(),
+                color = Color(0xFF6E6A7C)
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(24.px())
+                    .clip(RoundedCornerShape(7.px()))
+                    .background(
+                        color = when (task.icon) {
+                            R.mipmap.briefcase -> Color(0xFFFFE4F2)
+                            R.mipmap.user -> Color(0xFFEDE4FF)
+                            R.mipmap.book -> Color(0xFFFFE6D4)
+                            else -> Color.White
+                        }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(task.icon),
+                    contentDescription = null,
+                    modifier = Modifier.size(14.px())
+                )
+            }
+        }
+
+        Text(
+            text = task.title,
+            fontSize = 14.textPx(),
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.px())
+            ) {
+                Image(
+                    painter = painterResource(R.mipmap.time),
+                    contentDescription = null,
+                    modifier = Modifier.size(14.px())
+                )
+
+                Text(
+                    text = task.date,
+                    fontSize = 11.textPx(),
+                    color = Color(0xFFAB94FF)
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(
+                        color = when (task.status) {
+                            "已完成" -> Color(0xFFEDE8FF)
+                            "进行中" -> Color(0xFFFFE9E1)
+                            "待办" -> Color(0xFFE3F2FF)
+                            else -> Color.White
+                        }
+                    )
+                    .padding(horizontal = 6.px(), vertical = 2.px()),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = task.status,
+                    fontSize = 9.textPx(),
+                    color = when (task.status) {
+                        "已完成" -> Color(0xFF5F33E1)
+                        "进行中" -> Color(0xFFFF7D53)
+                        "待办" -> Color(0xFF0087FF)
+                        else -> Color.White
+                    }
+                )
+            }
+        }
     }
 }
