@@ -202,7 +202,7 @@ fun DateItem(
     }
 }
 
-//自定义形状
+// 自定义形状：分类按钮
 val CustomShape = GenericShape { size, _ ->
     // width / 22 height / 8
     val (width, height) = size.width to size.height
@@ -446,4 +446,36 @@ fun TaskItem(
             }
         }
     }
+}
+
+// 自定义形状：底部导航栏
+val CustomShape2 = GenericShape{ size, _ ->
+    val (width, height) = size.width to size.height
+    val floatWidth = width / 5f
+    moveTo(0f, height)
+    lineTo(0f, height / 3)
+    // 左上角圆角
+    quadraticTo(
+        0f, 0f,
+        height / 3f, 0f
+    )
+    lineTo(width * 2 / 5 - floatWidth / 8, 0f)
+    cubicTo(
+        width * 2 / 5 + floatWidth / 8, 0f,
+        width * 2 / 5 + floatWidth / 8, height / 2,
+        width / 2, height / 2
+    )
+    cubicTo(
+        width * 3 / 5 - floatWidth / 8, height / 2,
+        width * 3 / 5 - floatWidth / 8, 0f,
+        width * 3 / 5 + floatWidth / 8, 0f
+    )
+    lineTo(width - height / 3, 0f)
+    quadraticTo(
+        width, 0f,
+        width, height / 3f
+    )
+    lineTo(width, height)
+    lineTo(0f, height)
+    close()
 }
