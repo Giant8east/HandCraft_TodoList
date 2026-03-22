@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,6 +31,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -39,12 +43,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import com.example.handcraft_todolist.ui.theme.HandCraft_TodoListTheme
@@ -78,6 +84,9 @@ fun TodoListScreen() {
         containerColor = Color.Transparent,
         topBar = {
             TodoListTopBar()
+        },
+        bottomBar = {
+            TodoListBottomBar()
         }
     ) { innerPadding ->
         Column(
@@ -88,6 +97,7 @@ fun TodoListScreen() {
             DateRow()
             CategoryRow()
             TaskList()
+
         }
     }
 }
@@ -357,7 +367,7 @@ fun TaskItem(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.px())
+        verticalArrangement = Arrangement.spacedBy(5.px())
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -478,4 +488,104 @@ val CustomShape2 = GenericShape{ size, _ ->
     lineTo(width, height)
     lineTo(0f, height)
     close()
+}
+
+@Composable
+fun TodoListBottomBar() {
+    val list = remember {
+        listOf(
+            R.mipmap.home,
+            R.mipmap.calendar,
+            R.mipmap.add,
+            R.mipmap.doc,
+            R.mipmap.profile,
+        )
+    }
+    var currentIndex by remember { mutableIntStateOf(0) }
+    Box {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(66.px())
+                .clip(CustomShape2)
+                .background(Color(0xFFEEE9FF))
+                .navigationBarsPadding()
+        ) {
+            list.fastForEachIndexed { index, icon ->
+                if(index == 2){
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                    )
+                } else {
+                    BottomItem(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clickable {
+                                currentIndex = index
+                            },
+                        icon = icon,
+                        isSelected = currentIndex == index
+                    )
+                }
+            }
+        }
+
+        Surface(
+            onClick = {},
+            modifier = Modifier
+                .offset(0.dp, (-32).px())
+                .align(Alignment.Center)
+                .size(44.px()),
+            shape = CircleShape,
+            shadowElevation = 8.dp,
+            color = Color(0xFF5F33E1)
+        ) {
+            BottomItem(
+//                modifier = Modifier
+//                    .offset(0.dp, (-32).px())
+//                    .align(Alignment.Center)
+////                .shadow(
+////                    elevation = 50.dp,
+////                    shape = CircleShape,
+////                    ambientColor = Color(0xFFc2b2f0),
+//////                    spotColor = Color(0xFFc2b2f0)
+////                )
+//                    .size(44.px())
+//                    .clip(CircleShape)
+//                    .background(
+//                        color = Color(0xFF5F33E1)
+//                    ),
+                icon = list[2]
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomItem(
+    modifier: Modifier = Modifier,
+    icon: Int,
+    isSelected: Boolean = false
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(icon),
+            contentDescription = null,
+            modifier = Modifier
+                .shadow(
+                    elevation = if (isSelected) 8.dp else 0.dp,
+                    shape = CircleShape,
+                    ambientColor = Color(0xFF5F33E1),
+                    spotColor = Color(0xFF5F33E1)
+                )
+                .size(24.px())
+                .background(Color.Transparent)
+        )
+    }
 }
